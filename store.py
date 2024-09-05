@@ -11,7 +11,8 @@ class Store:
         Initializes a Store object.
 
         Args:
-            products (list, optional): A list of Product objects to add to the store. Defaults to an empty list.
+            products (list, optional): A list of Product objects to add to the store.
+            Defaults to an empty list.
         """
         self.products = products if products else []
 
@@ -68,7 +69,8 @@ class Store:
         Processes an order from the store.
 
         Args:
-            shopping_list (list): A list of tuples, each containing a Product object and the quantity to buy.
+            shopping_list (list): A list of tuples, each containing a
+            Product object and the quantity to buy.
 
         Returns:
             float: The total cost of the order.
