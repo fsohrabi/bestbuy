@@ -1,5 +1,37 @@
+import sys
 from products import Product
 from store import Store
+
+
+def start(best_buy):
+    store_menu = """
+        Store Menu
+        ----------
+    1. List all products in store
+    2. Show total amount in store
+    3. Make an order
+    4. Quit
+    Enter choice (1-4): 
+    """.strip()
+
+    cmd_funcs = {
+        "1": best_buy.get_all_products,
+        "2": best_buy.get_total_quantity,
+        "4": sys.exit
+    }
+
+    while True:
+        print(store_menu)
+        cmd = input()
+
+        # Execute the corresponding function based on user input
+        if cmd in cmd_funcs:
+            if cmd == "4":
+                print("Bye!")
+            cmd_funcs[cmd]()
+        else:
+            print("Invalid choice")
+            input("Press Enter to continue...")
 
 
 class main():
@@ -9,10 +41,8 @@ class main():
                         Product("Google Pixel 7", price=500, quantity=250),
                         ]
 
-        store = Store(product_list)
-        products = store.get_all_products()
-        print(store.get_total_quantity())
-        print(store.order([(products[0], 1), (products[1], 2)]))
+        best_buy = Store(product_list)
+        start(best_buy)
     except Exception as e:
         print(e)
 
