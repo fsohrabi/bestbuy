@@ -23,11 +23,21 @@ class Product:
         """
         if not name or price < 0 or quantity < 0:
             raise ValueError('Invalid product creation parameters')
-        self.name = name
-        self.price = price
-        self.quantity = quantity
+        self._name = name
+        self._price = price
+        self._quantity = quantity
         self.active = True
         self._promotion = None
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if not name:
+            raise ValueError('Invalid product creation parameters')
+        self._name = name
 
     @property
     def promotion(self):
@@ -37,11 +47,23 @@ class Product:
     def promotion(self, new_promotion):
         self._promotion = new_promotion
 
-    def get_quantity(self):
-        """Returns the current quantity of the product."""
-        return self.quantity
+    @property
+    def price(self):
+        return self._price
 
-    def set_quantity(self, quantity):
+    @price.setter
+    def price(self, price):
+        if price < 0:
+            raise ValueError('Invalid product creation parameters')
+        self._price = price
+
+    @property
+    def quantity(self):
+        """Returns the current quantity of the product."""
+        return self._quantity
+
+    @quantity.setter
+    def quantity(self, quantity):
         """
         Sets the quantity of the product.
 
@@ -51,11 +73,19 @@ class Product:
         Args:
             quantity (int): The new product quantity.
         """
+        if quantity < 0:
+            raise ValueError('Invalid product creation parameters')
         if quantity == 0:
             self.deactivate()
         else:
             self.activate()
-        self.quantity = quantity
+        self._quantity = quantity
+
+    def __gt__(self, other):
+        return self.price > other.price
+
+    def __lt__(self, other):
+        return self.price < other.price
 
     def is_active(self):
         """Returns whether the product is active."""
@@ -91,7 +121,7 @@ class Product:
         """
         if self.quantity < quantity and not isinstance(self, NonStockedProduct):
             raise ValueError("Insufficient stock available")
-        elif isinstance(self,LimitedProduct) and quantity > self.maximum:
+        elif isinstance(self, LimitedProduct) and quantity > self.maximum:
             raise ValueError(f"Error while making order! Only 1 is allowed from this {self.name}!")
 
         # Apply promotion if present
@@ -102,7 +132,7 @@ class Product:
 
         # Decrease the product quantity
         if not isinstance(self, NonStockedProduct):
-            self.set_quantity(self.quantity - quantity)
+            self.quantity = self.quantity - quantity
         return total_price
 
 

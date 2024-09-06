@@ -16,6 +16,9 @@ class Store:
         """
         self.products = products if products else []
 
+    def __contains__(self, item):
+        return item in self.products
+
     def add_product(self, product):
         """
         Adds a product to the store.
@@ -53,7 +56,7 @@ class Store:
         Returns:
             int: Total quantity of all active products.
         """
-        return sum(product.get_quantity() for product in self.products if product.is_active())
+        return sum(product.quantity for product in self.products if product.is_active())
 
     def get_all_products(self):
         """
