@@ -60,7 +60,7 @@ class Product:
         """Deactivates the product."""
         self.active = False
 
-    def show(self):
+    def __str__(self):
         """
         Displays the product information in a readable format.
 
@@ -86,3 +86,32 @@ class Product:
             raise ValueError("Insufficient stock available")
         self.set_quantity(self.quantity - quantity)
         return quantity * self.price
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        super().__init__(name, price, 0)
+
+    def __str__(self):
+        """
+        Displays the product information in a readable format.
+
+        Returns:
+            str: The formatted product details.
+        """
+        return f"{self.name}, Price: ${self.price:.2f}"
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def __str__(self):
+        """
+        Displays the product information in a readable format.
+
+        Returns:
+            str: The formatted product details.
+        """
+        return f"{self.name}, Price: ${self.price:.2f}, Quantity: {self.quantity}, Maximum: {self.maximum}"
