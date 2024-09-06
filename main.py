@@ -107,7 +107,7 @@ def start(store):
             print("Invalid choice. Please try again.")
 
 
-if __name__ == '__main__':
+def main():
     try:
         products = [
             Product("MacBook Air M2", price=1450, quantity=100),
@@ -118,3 +118,7 @@ if __name__ == '__main__':
         start(best_buy)
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+if __name__ == '__main__':
+    main()
