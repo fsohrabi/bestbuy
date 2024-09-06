@@ -27,6 +27,15 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self._promotion = None
+
+    @property
+    def promotion(self):
+        return self._promotion
+
+    @promotion.setter
+    def promotion(self, new_promotion):
+        self._promotion = new_promotion
 
     def get_quantity(self):
         """Returns the current quantity of the product."""
@@ -67,25 +76,34 @@ class Product:
         Returns:
             str: The formatted product details.
         """
-        return f"{self.name}, Price: ${self.price:.2f}, Quantity: {self.quantity}"
+        promotion_string = f"Promotion: {self.promotion.name}" if self.promotion else "Promotion: None"
+        return f"{self.name}, Price: ${self.price:.2f}, Quantity: {self.quantity}, " + promotion_string
 
     def buy(self, quantity):
         """
-        Processes the purchase of the product.
+        Processes the purchase of the product and applies any promotion if present.
 
         Args:
             quantity (int): The amount of the product to buy.
 
         Returns:
-            float: The total price for the purchased products.
-
-        Raises:
-            ValueError: If the requested quantity exceeds available stock.
+            float: The total price after applying the promotion.
         """
-        if self.quantity < quantity:
+        if self.quantity < quantity and not isinstance(self, NonStockedProduct):
             raise ValueError("Insufficient stock available")
-        self.set_quantity(self.quantity - quantity)
-        return quantity * self.price
+        elif isinstance(self,LimitedProduct) and quantity > self.maximum:
+            raise ValueError(f"Error while making order! Only 1 is allowed from this {self.name}!")
+
+        # Apply promotion if present
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = quantity * self.price
+
+        # Decrease the product quantity
+        if not isinstance(self, NonStockedProduct):
+            self.set_quantity(self.quantity - quantity)
+        return total_price
 
 
 class NonStockedProduct(Product):
@@ -99,7 +117,8 @@ class NonStockedProduct(Product):
         Returns:
             str: The formatted product details.
         """
-        return f"{self.name}, Price: ${self.price:.2f}"
+        promotion_string = f"Promotion: {self.promotion.name}" if self.promotion else "Promotion: None"
+        return f"{self.name}, Quantity: Unlimited, Price: ${self.price:.2f}, " + promotion_string
 
 
 class LimitedProduct(Product):
@@ -114,4 +133,6 @@ class LimitedProduct(Product):
         Returns:
             str: The formatted product details.
         """
-        return f"{self.name}, Price: ${self.price:.2f}, Quantity: {self.quantity}, Maximum: {self.maximum}"
+        promotion_string = f"Promotion: {self.promotion.name}" if self.promotion else "Promotion: None"
+        return (f"{self.name}, Price: ${self.price:.2f},"
+                f"Limited to {self.maximum} per order!, ") + promotion_string

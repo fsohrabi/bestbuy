@@ -1,5 +1,6 @@
 import sys
-from products import Product,NonStockedProduct,LimitedProduct
+from products import Product, NonStockedProduct, LimitedProduct
+import promotions
 from store import Store
 
 
@@ -117,6 +118,16 @@ def main():
             LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
 
         ]
+        # Create promotion catalog
+        second_half_price = promotions.SecondHalfPrice("Second Half price!")
+        third_one_free = promotions.ThirdOneFree("Third One Free!")
+        thirty_percent = promotions.PercentDiscount("30% off!", percent=30)
+
+        # Add promotions to products
+        products[0].promotion = second_half_price
+        products[1].promotion = third_one_free
+        products[3].promotion = thirty_percent
+
         best_buy = Store(products)
         start(best_buy)
     except Exception as e:
